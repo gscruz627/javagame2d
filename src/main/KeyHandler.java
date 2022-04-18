@@ -3,7 +3,7 @@ import java.awt.event.*;
 
 public class KeyHandler implements KeyListener{
 
-	public boolean pressedUp, pressedDown, pressedLeft, pressedRight;
+	public boolean pressedUp, pressedDown, pressedLeft, pressedRight, zoomedIn;
 	GamePanel gp;
 	public void keyPressed(KeyEvent e) {
 		
@@ -20,6 +20,10 @@ public class KeyHandler implements KeyListener{
 		}
 		else if (code == KeyEvent.VK_RIGHT) {
 			pressedRight = true;
+		}
+		else if (code == KeyEvent.VK_Z) {
+			System.out.println("Received Z");
+			gp.zoomIn();
 		}
 	}
 
@@ -39,11 +43,9 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_RIGHT) {
 			pressedRight = false;
 		}
-		if (code == KeyEvent.VK_ADD) {
-			gp.zoom(1);
-		}
-		if (code == KeyEvent.VK_SUBTRACT) {
-			gp.zoom(-1);
+		if (code == KeyEvent.VK_Z) {
+			System.out.println("received Z");
+			gp.zoomOut();
 		}
 	}
 	@Override

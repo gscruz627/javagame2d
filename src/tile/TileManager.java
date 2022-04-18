@@ -57,7 +57,6 @@ public class TileManager {
 				if (line.contains("﻿")) {
 					line = line.substring(3);
 				}
-				System.out.println(line);
 				while (col < gp.maxWorldCol) {
 					
 					String[] numbers = line.split(" ");
@@ -88,7 +87,7 @@ public class TileManager {
 			double screenX = worldX - gp.player.playerX + gp.player.screenX;
 			double screenY = worldY - gp.player.playerY + gp.player.screenY;
 			
-			if (worldX + gp.tileSize> gp.player.playerX - gp.player.screenX && worldX - gp.tileSize < gp.player.playerX + gp.player.screenX && worldY + gp.tileSize > gp.player.playerY - gp.player.screenY && worldY - gp.tileSize < gp.player.playerY + gp.player.screenY) {
+			if ((worldX + 16) + gp.tileSize> gp.player.playerX - gp.player.screenX && (worldX - 16) - gp.tileSize < gp.player.playerX + gp.player.screenX && (worldY + 16) + gp.tileSize > gp.player.playerY - gp.player.screenY && (worldY - 16) - gp.tileSize < gp.player.playerY + gp.player.screenY) {
 				graph2D.drawImage(tile[tileNum].image, (int)screenX, (int)screenY, gp.tileSize, gp.tileSize, null);
 			}
 			col++;

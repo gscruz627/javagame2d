@@ -35,6 +35,8 @@ public class GamePanel extends JPanel implements Runnable{
     public Thread gameThread;
     public Player player = new Player(this, this.keyHandler);
 
+    //Helpers
+    private int keyZCounter = 0;
     // Starts the main game thread;
     public void startGameThread(){
         gameThread = new Thread(this);
@@ -86,15 +88,27 @@ public class GamePanel extends JPanel implements Runnable{
     	
     } 
     
-    public void zoom(int d) {
+    public void zoomIn() {
+    	if (keyZCounter == 0) {
+    		keyZCounter = 1;
     	int oldWorldWidth = tileSize * maxWorldCol;
-    	if (tileSize < 100 && tileSize > 5);
-    	tileSize += d;
+    	tileSize -= 16;
     	int newWorldWidth = tileSize * maxWorldCol;
     	double multiplier = (double)newWorldWidth/oldWorldWidth;
     	player.playerX *= multiplier;
     	player.playerY *= multiplier;
     	player.speed = (double)newWorldWidth / ((double)worldWidth / 4);
+    	}
+    	}    
+    public void zoomOut(){
+    	keyZCounter = 0;
+    	int oldWorldWidth = tileSize * maxWorldCol;
+		tileSize += 16;
+		int newWorldWidth = tileSize * maxWorldCol;
+		double multiplier = (double)newWorldWidth/oldWorldWidth;
+		player.playerX *= multiplier;
+		player.playerY *= multiplier;
+		player.speed = (double)newWorldWidth / ((double)worldWidth / 4);
     }
     
     // Panel constructor, what makes this panel different from JPanel;

@@ -8,7 +8,7 @@ public class Main{
         window.add(gamePane);
         //Last make window visible;
         window.setLocationRelativeTo(null);
-        window.setResizable(true);
+        window.setResizable(false);
         window.setSize(gamePane.getWidth() + 14, gamePane.getHeight() + 37);
         window.setVisible(true);
         System.out.println(gamePane.getSize());
