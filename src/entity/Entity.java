@@ -1,13 +1,20 @@
 package entity;
 import java.awt.image.*;
+import java.awt.geom.*;
+import java.awt.*;
 
 public class Entity {
-	public double playerX,playerY;
-	public double speed;
+	
+	public int playerX,playerY;
+	public int speed;
 	
 	public BufferedImage  up1, up2, down1, down2, left1, left2, right1, right2;
 	public String direction;
 	
 	public int spriteCounter = 0;
 	public int spriteNum = 1;
+	
+	//Hit-box set up
+	public Rectangle hitbox;
+	public boolean collisionOn = false;
 }

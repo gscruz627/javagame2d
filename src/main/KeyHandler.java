@@ -22,7 +22,6 @@ public class KeyHandler implements KeyListener{
 			pressedRight = true;
 		}
 		else if (code == KeyEvent.VK_Z) {
-			System.out.println("Received Z");
 			gp.zoomIn();
 		}
 	}

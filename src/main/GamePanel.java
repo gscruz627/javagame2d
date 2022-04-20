@@ -31,6 +31,7 @@ public class GamePanel extends JPanel implements Runnable{
     // Modified KeyHandler is created;
     KeyHandler keyHandler = new KeyHandler(this);
     TileManager tileManager = new TileManager(this);
+    public CollisionManager collisionManager = new CollisionManager(this);
     // Game thread is created;
     public Thread gameThread;
     public Player player = new Player(this, this.keyHandler);
@@ -97,7 +98,11 @@ public class GamePanel extends JPanel implements Runnable{
     	double multiplier = (double)newWorldWidth/oldWorldWidth;
     	player.playerX *= multiplier;
     	player.playerY *= multiplier;
-    	player.speed = (double)newWorldWidth / ((double)worldWidth / 4);
+    	player.hitbox.x *= multiplier;
+    	player.hitbox.y *= multiplier;
+    	player.hitbox.width *= multiplier;
+    	player.hitbox.height *= multiplier;
+    	player.speed = newWorldWidth / (worldWidth / 4);
     	}
     	}    
     public void zoomOut(){
@@ -108,7 +113,11 @@ public class GamePanel extends JPanel implements Runnable{
 		double multiplier = (double)newWorldWidth/oldWorldWidth;
 		player.playerX *= multiplier;
 		player.playerY *= multiplier;
-		player.speed = (double)newWorldWidth / ((double)worldWidth / 4);
+    	player.hitbox.x *= multiplier;
+    	player.hitbox.y *= multiplier;
+    	player.hitbox.width *= multiplier;
+    	player.hitbox.height *= multiplier;
+		player.speed = newWorldWidth / (worldWidth / 4);
     }
     
     // Panel constructor, what makes this panel different from JPanel;
