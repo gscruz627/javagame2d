@@ -11,7 +11,7 @@ public class Main{
         window.setResizable(false);
         window.setSize(gamePane.getWidth() + 14, gamePane.getHeight() + 37);
         window.setVisible(true);
-        System.out.println(gamePane.getSize());
+        gamePane.setUpGame();
         gamePane.startGameThread();
     }
 }

@@ -4,6 +4,7 @@ import java.awt.Color;
 import javax.swing.JPanel;
 import entity.*;
 import tile.*;
+import object.*;
 
 public class GamePanel extends JPanel implements Runnable{
 
@@ -32,10 +33,12 @@ public class GamePanel extends JPanel implements Runnable{
     KeyHandler keyHandler = new KeyHandler(this);
     TileManager tileManager = new TileManager(this);
     public CollisionManager collisionManager = new CollisionManager(this);
+    public ObjectManager objManager = new ObjectManager(this);
     // Game thread is created;
     public Thread gameThread;
     public Player player = new Player(this, this.keyHandler);
-
+    public ParentObject[] obj = new ParentObject[10];
+    
     //Helpers
     private int keyZCounter = 0;
     // Starts the main game thread;
@@ -84,9 +87,17 @@ public class GamePanel extends JPanel implements Runnable{
     	Graphics2D graph2D = (Graphics2D)graph;
     	
     	// Drawn in layers 
-    	tileManager.draw(graph2D);
-    	player.draw(graph2D);
     	
+    	tileManager.draw(graph2D);
+    	
+    	
+    	for (int i = 0; i < obj.length; i++) {
+    		if (obj[i] != null) {
+    			obj[i].draw(graph2D, this);
+    		}
+    	}
+    	player.draw(graph2D);
+    	graph2D.dispose();
     } 
     
     public void zoomIn() {
@@ -118,6 +129,9 @@ public class GamePanel extends JPanel implements Runnable{
     	player.hitbox.width *= multiplier;
     	player.hitbox.height *= multiplier;
 		player.speed = newWorldWidth / (worldWidth / 4);
+    }
+    public void setUpGame() {
+    	objManager.setObject();
     }
     
     // Panel constructor, what makes this panel different from JPanel;

@@ -11,6 +11,7 @@ public class Player extends Entity{
 	KeyHandler kh;
 	public final int screenX;
 	public final int screenY;
+	public int cards = 0;
 	
 	public Player(GamePanel gp, KeyHandler kh){
 		
@@ -27,6 +28,8 @@ public class Player extends Entity{
 		hitbox.y = 16;
 		hitbox.width = 32;
 		hitbox.height = 32;
+		hitboxDefaultX = hitbox.x;
+		hitboxDefaultY = hitbox.y;
 	}
 	public void setDefaultValues() {
 		playerX = gp.tileSize * 61;
@@ -69,7 +72,8 @@ public class Player extends Entity{
     	
     	collisionOn = false;
     	gp.collisionManager.checkTile(this);
-    	
+    	int objIndex = gp.collisionManager.checkObject(this, true);
+    	resolveObjectCollision(objIndex);
     	if (collisionOn == false) {
     		switch(direction) {
     		case "up": playerY -= speed; break;
@@ -91,6 +95,27 @@ public class Player extends Entity{
     	spriteCounter = 0;
     	}
     	}
+	}
+	public void resolveObjectCollision(int i) {
+		if (i != -1) {
+			String objName = gp.obj[i].name;
+			switch(objName) {
+			case "card":
+				gp.obj[i] = null;
+				cards++;
+				System.out.println("Cards: " + cards);
+				break;
+			case "door":
+				if (cards > 0) {
+					gp.obj[i] = null;
+					cards--;
+					System.out.println("Cards: " + cards);
+				break;
+			}
+			case "ATM":
+				break;
+			}
+		}
 	}
 	public void draw(Graphics graph2D) {
     	
