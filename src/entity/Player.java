@@ -47,7 +47,7 @@ public class Player extends Entity{
 		playerY = gp.tileSize * 82;
 		
 		//PLAYER'S SPEED IS 4PX PER MOVEMENT, AND IS FACING DOWN BY DEFAULT
-		speed = gp.worldWidth / (gp.worldWidth / 4);
+		speed = 4;
 		direction = "down";
 		
 	}
@@ -135,14 +135,21 @@ public class Player extends Entity{
 			case "card":
 				gp.obj[i] = null;
 				cards++;
+				gp.playSoundEffect(1);
 				break;
 			case "door":
 				if (cards > 0) {
 					gp.obj[i] = null;
 					cards--;
+					gp.playSoundEffect(2);
 				break;
-			}
+				}
 			case "ATM":
+				break;
+			case "pop":
+				speed += 3;
+				gp.obj[i] = null;
+				gp.playSoundEffect(3);
 				break;
 			}
 		}

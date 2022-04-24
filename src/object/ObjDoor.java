@@ -2,6 +2,7 @@ package object;
 
 import javax.imageio.ImageIO;
 
+//DOOR IS AN OBJECT
 public class ObjDoor extends ParentObject{
 
 	public ObjDoor() {

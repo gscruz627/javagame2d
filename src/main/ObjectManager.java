@@ -3,6 +3,7 @@ package main;
 import object.ObjATM;
 import object.ObjCard;
 import object.ObjDoor;
+import object.ObjPop;
 
 public class ObjectManager {
 	GamePanel gp;
@@ -26,5 +27,9 @@ public class ObjectManager {
 		gp.obj[3] = new ObjDoor();
 		gp.obj[3].objectX = 61 * gp.tileSize;
 		gp.obj[3].objectY = 78 * gp.tileSize;
+		
+		gp.obj[4] = new ObjPop();
+		gp.obj[4].objectX = 51 * gp.tileSize;
+		gp.obj[4].objectY = 83 * gp.tileSize;
 	}
 }

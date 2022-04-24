@@ -30,14 +30,13 @@ public class GamePanel extends JPanel implements Runnable{
     // WORLD SETTINGS
     public final int maxWorldCol = 100; // 100 TILES WIDE
     public final int maxWorldRow = 100; // 100 TILES TALL
-    public int worldWidth = tileSize * maxWorldCol; // TOTAL WIDTH OF THE WORLD IN PX
-    public int worldHeight = tileSize * maxWorldRow; // TOTAL HEIGHT OF THE WORLD IN PX
     
     //MANAGERS;
     KeyHandler keyHandler = new KeyHandler(this); //MANAGES KEYBOARD RESPONSES
     TileManager tileManager = new TileManager(this); //MANAGES TILES
     public CollisionManager collisionManager = new CollisionManager(this); //MANAGES COLLISION (ENTITY-OBJECT)
     public ObjectManager objManager = new ObjectManager(this); //MANAGES OBJECTS
+    SoundManager sound = new SoundManager();
     
     //CREATORS
     public Thread gameThread; //CREATES GAME THREAD
@@ -51,7 +50,7 @@ public class GamePanel extends JPanel implements Runnable{
     public void setupAdditional() {
     	
     	objManager.setObject(); //THE OBJECT MANAGER BEGINS CHECKING FOR COLLISION
-    
+    	playMusic(0); // BACKGROUND MUSIC WILL BE PLAYED
     }
     
     //STARTS THE GAME
@@ -89,7 +88,20 @@ public class GamePanel extends JPanel implements Runnable{
     	
     }
     	
+    public void playMusic(int i) {
+    	sound.setFile(i);
+    	sound.play();
+    	sound.loop();
+    }
     
+    public void stopMusic() {
+    	sound.stop();
+    }
+    
+    public void playSoundEffect(int i) {
+    	sound.setFile(i);
+    	sound.play();
+    }
     // UPDATES INFORMATION ON THE SCREEN
     public void update() {
     	player.update();
