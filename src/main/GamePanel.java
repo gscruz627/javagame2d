@@ -1,125 +1,124 @@
 package main;
+
+//IMPORT
 import java.awt.*;
 import java.awt.Color;
 import javax.swing.JPanel;
+
+//IMPORT LOCAL PACKAGES
 import entity.*;
 import tile.*;
 import object.*;
 
 public class GamePanel extends JPanel implements Runnable{
-
-	private static final long serialVersionUID = 1L;
-	// Game screen settings, sizing
-    final int originalTitleSize = 16; //16x16 tile scaled by 3.0;
-    final int tileScale = 3;
-    public int tileSize = originalTitleSize * tileScale;
+	
+	// BACKGROUND TILES SETTINGS
+    final int originalTitleSize = 16; //TILES ARE 16 X 16
+    final int tileScale = 3; //SCALED BY 3
+    public int tileSize = originalTitleSize * tileScale; //CURRENT TILE SIZE, DEFAULT = 48
+    
+    //SCREEN SETTINGS
     final int FPS = 60;
-
-    // Maximum size defined
+    
     public int maxScreenCol = 16;
     public int maxScreenRow = 12;
 
-    public final int screenWidth = tileSize * maxScreenCol; // 768px wide
+    public final int screenWidth = tileSize * maxScreenCol; //768px wide
     public final int screenHeight = tileSize * maxScreenRow; //576px tall
     
     
-    // World settings
-    public final int maxWorldCol = 100;
-    public final int maxWorldRow = 100;
-    public int worldWidth = tileSize * maxWorldCol;
-    public int worldHeight = tileSize * maxWorldRow;
+    // WORLD SETTINGS
+    public final int maxWorldCol = 100; // 100 TILES WIDE
+    public final int maxWorldRow = 100; // 100 TILES TALL
+    public int worldWidth = tileSize * maxWorldCol; // TOTAL WIDTH OF THE WORLD IN PX
+    public int worldHeight = tileSize * maxWorldRow; // TOTAL HEIGHT OF THE WORLD IN PX
     
-    // Modified KeyHandler is created;
-    KeyHandler keyHandler = new KeyHandler(this);
-    TileManager tileManager = new TileManager(this);
-    public CollisionManager collisionManager = new CollisionManager(this);
-    public ObjectManager objManager = new ObjectManager(this);
-    // Game thread is created;
-    public Thread gameThread;
-    public Player player = new Player(this, this.keyHandler);
-    public ParentObject[] obj = new ParentObject[10];
+    //MANAGERS;
+    KeyHandler keyHandler = new KeyHandler(this); //MANAGES KEYBOARD RESPONSES
+    TileManager tileManager = new TileManager(this); //MANAGES TILES
+    public CollisionManager collisionManager = new CollisionManager(this); //MANAGES COLLISION (ENTITY-OBJECT)
+    public ObjectManager objManager = new ObjectManager(this); //MANAGES OBJECTS
     
-    //Helpers
+    //CREATORS
+    public Thread gameThread; //CREATES GAME THREAD
+    public Player player = new Player(this, this.keyHandler); //CREATES A PLAYER
+    public ParentObject[] obj = new ParentObject[10]; //CREATES A (10) LIST OF OBJECTS ON THE SCREEN
+    
+    //CLASS HELPERS
     private int keyZCounter = 0;
-    // Starts the main game thread;
+
+    // SETS UP ADDITIONAL DETAILS
+    public void setupAdditional() {
+    	
+    	objManager.setObject(); //THE OBJECT MANAGER BEGINS CHECKING FOR COLLISION
+    
+    }
+    
+    //STARTS THE GAME
     public void startGameThread(){
         gameThread = new Thread(this);
         gameThread.start();
     }
     
-    // What does happens while the game thread is on
-    @Override
+    // METHOD THAT RUNS FPS TIMES AND CALLS FOR DRAWING AND CHECKING
     public void run(){
     	
-    	double drawInterval = 1000000000 / FPS;
-    	double nextDrawTime = System.nanoTime() + drawInterval;
+    	double drawInterval = 1000000000 / FPS; //NANO SECONDS IN FPS
+    	double nextDrawTime = System.nanoTime() + drawInterval; //DEFINES NEXT DRAWING TIME
+    	
     	while(gameThread != null) {
-    		update();
-    		repaint(); // Calls paintComponent;
+    		// IF THE GAMETHREAD IS ACTIVE IT WILL UPDATE AND REPAINT THE PANEL 60 TIMES PER SECOND
+    		update(); //
+    		repaint(); // METHOD TO CALL FOR paintComponent()
     		
     		try {
-    			double remainingTime = nextDrawTime - System.nanoTime();
-    			remainingTime /= 1000000;
-    			nextDrawTime += drawInterval;
+    			double remainingTime = nextDrawTime - System.nanoTime(); //WILL GIVE HOW MANY ns IS LEFT TO NEXT DRAW TIME
     			
+    			//RESETS THE REMAINING TIME IF THE THREAD SLEPT ENOUGH :)
     			if (remainingTime < 0) {
-    				remainingTime = 0;
+    				remainingTime = 0; 
     			}
-    			Thread.sleep((long)remainingTime);
-    			nextDrawTime += drawInterval;
+    			
+    			Thread.sleep((long)remainingTime/1000000); //THREAD WILL SLEEP DURING remainingTime IN MILISECONDS
+    			nextDrawTime += (drawInterval*2); //CALCULATE THE NEXT DRAWING TIME
     		} catch(Exception e) {
     			System.out.println(e.getMessage());
     		}
+    		
     	}
+    	
     }
     	
     
-    // Method to update information on the screen
+    // UPDATES INFORMATION ON THE SCREEN
     public void update() {
     	player.update();
     }
     
-    // Method to paint component on the screen each time
+    // OVERRIDES PANEL METHOD TO DRAW OBJECTS ON SCREEN
     public void paintComponent(Graphics graph) {
     	
-    	super.paintComponent(graph);
+    	super.paintComponent(graph); //RECURSION TO ITS PARENT
     	
     	Graphics2D graph2D = (Graphics2D)graph;
     	
-    	// Drawn in layers 
+    	//LAYER DRAWING
+    	tileManager.draw(graph2D); //BACKGROUND TILES FIRST
     	
-    	tileManager.draw(graph2D);
-    	
-    	
-    	for (int i = 0; i < obj.length; i++) {
+    	for (int i = 0; i < obj.length; i++) { //OBJECTS SECOND
     		if (obj[i] != null) {
     			obj[i].draw(graph2D, this);
     		}
     	}
-    	player.draw(graph2D);
+    	
+    	player.draw(graph2D); //PLAYER THIRD
     	graph2D.dispose();
     } 
     
-    public void zoomIn() {
-    	if (keyZCounter == 0) {
-    		keyZCounter = 1;
+    /* FUTURE IMPLEMENTATION
+    private void zoom(int n) {
     	int oldWorldWidth = tileSize * maxWorldCol;
-    	tileSize -= 16;
-    	int newWorldWidth = tileSize * maxWorldCol;
-    	double multiplier = (double)newWorldWidth/oldWorldWidth;
-    	player.playerX *= multiplier;
-    	player.playerY *= multiplier;
-    	player.hitbox.x *= multiplier;
-    	player.hitbox.y *= multiplier;
-    	player.hitbox.width *= multiplier;
-    	player.hitbox.height *= multiplier;
-    	player.speed = newWorldWidth / (worldWidth / 4);
-    	}
-    	}    
-    public void zoomOut(){
-    	keyZCounter = 0;
-    	int oldWorldWidth = tileSize * maxWorldCol;
-		tileSize += 16;
+		tileSize += n;
 		int newWorldWidth = tileSize * maxWorldCol;
 		double multiplier = (double)newWorldWidth/oldWorldWidth;
 		player.playerX *= multiplier;
@@ -130,16 +129,27 @@ public class GamePanel extends JPanel implements Runnable{
     	player.hitbox.height *= multiplier;
 		player.speed = newWorldWidth / (worldWidth / 4);
     }
-    public void setUpGame() {
-    	objManager.setObject();
+    public void zoomIn() {   
+    	if (keyZCounter == 0) {
+    		keyZCounter = 1;
+    		zoom(-16);
+    	}
     }
+    public void zoomOut(){
+    	keyZCounter = 0;
+    	int oldWorldWidth = tileSize * maxWorldCol;
+    	zoom(16);
+    }
+    */
     
-    // Panel constructor, what makes this panel different from JPanel;
+    // GAME PANEL CONSTRUCTOR
     public GamePanel(){
+    	
         this.setSize(screenWidth, screenHeight);
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
+        
     }
 }

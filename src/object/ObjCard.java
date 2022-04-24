@@ -2,6 +2,7 @@ package object;
 
 import javax.imageio.ImageIO;
 
+// CARD IS AN OBJECT
 public class ObjCard extends ParentObject{
 
 	public ObjCard() {

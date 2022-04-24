@@ -2,6 +2,7 @@ package object;
 
 import javax.imageio.ImageIO;
 
+// ATM IS AN OBJECT
 public class ObjATM extends ParentObject{
 
 	public ObjATM() {
