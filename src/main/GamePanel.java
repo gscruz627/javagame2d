@@ -36,12 +36,15 @@ public class GamePanel extends JPanel implements Runnable{
     TileManager tileManager = new TileManager(this); //MANAGES TILES
     public CollisionManager collisionManager = new CollisionManager(this); //MANAGES COLLISION (ENTITY-OBJECT)
     public ObjectManager objManager = new ObjectManager(this); //MANAGES OBJECTS
-    SoundManager sound = new SoundManager();
+    public SoundManager music = new SoundManager();
+    SoundManager soundEffect = new SoundManager();
+    
     
     //CREATORS
     public Thread gameThread; //CREATES GAME THREAD
     public Player player = new Player(this, this.keyHandler); //CREATES A PLAYER
     public ParentObject[] obj = new ParentObject[10]; //CREATES A (10) LIST OF OBJECTS ON THE SCREEN
+    public UI screenUI = new UI(this);
     
     //CLASS HELPERS
     private int keyZCounter = 0;
@@ -72,14 +75,14 @@ public class GamePanel extends JPanel implements Runnable{
     		
     		try {
     			double remainingTime = nextDrawTime - System.nanoTime(); //WILL GIVE HOW MANY ns IS LEFT TO NEXT DRAW TIME
-    			
+    			nextDrawTime += drawInterval;
     			//RESETS THE REMAINING TIME IF THE THREAD SLEPT ENOUGH :)
     			if (remainingTime < 0) {
     				remainingTime = 0; 
     			}
     			
     			Thread.sleep((long)remainingTime/1000000); //THREAD WILL SLEEP DURING remainingTime IN MILISECONDS
-    			nextDrawTime += (drawInterval*2); //CALCULATE THE NEXT DRAWING TIME
+    			nextDrawTime += drawInterval; //CALCULATE THE NEXT DRAWING TIME
     		} catch(Exception e) {
     			System.out.println(e.getMessage());
     		}
@@ -89,18 +92,18 @@ public class GamePanel extends JPanel implements Runnable{
     }
     	
     public void playMusic(int i) {
-    	sound.setFile(i);
-    	sound.play();
-    	sound.loop();
+    	music.setFile(i);
+    	music.play();
+    	music.loop();
     }
     
     public void stopMusic() {
-    	sound.stop();
+    	music.stop();
     }
     
     public void playSoundEffect(int i) {
-    	sound.setFile(i);
-    	sound.play();
+    	soundEffect.setFile(i);
+    	soundEffect.play();
     }
     // UPDATES INFORMATION ON THE SCREEN
     public void update() {
@@ -124,6 +127,9 @@ public class GamePanel extends JPanel implements Runnable{
     	}
     	
     	player.draw(graph2D); //PLAYER THIRD
+    	screenUI.draw(graph2D);	
+    	 // ON SCREEN UI FOURTH
+    	
     	graph2D.dispose();
     } 
     

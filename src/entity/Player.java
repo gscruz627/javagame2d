@@ -136,15 +136,20 @@ public class Player extends Entity{
 				gp.obj[i] = null;
 				cards++;
 				gp.playSoundEffect(1);
+				gp.screenUI.showMessage("Found a card with money");
 				break;
 			case "door":
 				if (cards > 0) {
 					gp.obj[i] = null;
 					cards--;
 					gp.playSoundEffect(2);
-				break;
+				} else {
+					gp.screenUI.showMessage("You need a card");
 				}
+				break;
 			case "ATM":
+				gp.screenUI.gameFinish = true;
+				gp.music.stop();	
 				break;
 			case "pop":
 				speed += 3;
@@ -201,6 +206,5 @@ public class Player extends Entity{
 		
 		// WHEN THE SPRITE IS LOADED AND EVERYTHING IS UPDATED, ACTUALLY DRAW THE PLAYER IN THE MIDDLE OF THE SCREEN
 		graph2D.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-    	graph2D.dispose();
 	}
 }
