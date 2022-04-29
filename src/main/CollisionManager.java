@@ -142,4 +142,59 @@ public class CollisionManager {
 		return index;
 		
 	}
+	public int checkEntity(Entity entity, Entity[] target) {
+int index = -1;
+		
+		//FOR ALL OBJECTS
+		for (int i = 0; i < target.length; i++) {
+			if (target[i] != null) {
+				// GET THE PLAYER'S HITBOX
+				entity.hitbox.x = entity.playerX + entity.hitbox.x;
+				entity.hitbox.y = entity.playerY + entity.hitbox.y;
+				// GET THE OBJECT'S HITBOX
+				target[i].hitbox.x = target[i].playerX + target[i].hitbox.x;
+				target[i].hitbox.y = target[i].playerY + target[i].hitbox.y;
+				
+				// BASED ON THE DIRECTION, 
+				switch(entity.direction) {
+				case "up":
+					// CHECK THAT IF THE PLAYER MOVES AND THE HITBOX OF BOTH INTERSECT CHANGE COLLISION STATE AND INDEX OF COLLISION
+					entity.hitbox.y -= entity.speed;
+					if (entity.hitbox.intersects(target[i].hitbox)) {
+						entity.collisionOn = true;
+					}
+					break;
+				case "down":
+					entity.hitbox.y += entity.speed;
+					if (entity.hitbox.intersects(target[i].hitbox)) {
+						entity.collisionOn = true;
+					}
+					break;
+				case "right":
+					entity.hitbox.x += entity.speed;
+					if (entity.hitbox.intersects(target[i].hitbox)) {
+						entity.collisionOn = true;
+					}
+					break;
+				case "left":
+					entity.hitbox.x -= entity.speed;
+					if (entity.hitbox.intersects(target[i].hitbox)) {
+						entity.collisionOn = true;
+					}
+					break;
+				}
+				
+				// ONCE DOING THE CALCULATIONS FOR INTERSECTIONS, SET THE HITBOXES TO DEFAULT
+				entity.hitbox.x = entity.hitboxDefaultX;
+				entity.hitbox.y = entity.hitboxDefaultY;
+				target[i].hitbox.x = target[i].hitboxDefaultX;
+				target[i].hitbox.y = target[i].hitboxDefaultY;
+			}
+		}
+		
+		// RETURN THE INDEX OF THE OBJECT (IF NO OBJECT, RETURNS -1)
+		return index;
+		
+
+	}
 }

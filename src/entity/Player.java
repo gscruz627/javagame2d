@@ -9,7 +9,6 @@ import main.*;
 public class Player extends Entity{
 	
 	//GET THE PANEL AND THE KEYBOARD HANDLER
-	GamePanel gp;
 	KeyHandler kh;
 	
 	//PIXEL LIMITS TO DISPLAY ON THE SCREEN  (AROUND PLAYER)
@@ -17,11 +16,12 @@ public class Player extends Entity{
 	public final int screenY;
 	
 	//OBJECTS PICKED UP (INVENTORY)
-	public int cards = 0;
+	
+	//HELP VARIABLES
+	int standCounter = 0;
 	
 	public Player(GamePanel gp, KeyHandler kh){
-		
-		this.gp = gp;
+		super(gp);
 		this.kh = kh;
 		
 		//SCREEN DISPLAY AROUND PLAYER IS IN THE MIDDLE (PLAYER WILL THE DISPLAYED IN THE MIDDLE (OF THE SCREEN))
@@ -43,8 +43,8 @@ public class Player extends Entity{
 	public void setDefaultValues() {
 		
 		//PLAYER'S LOCATION IN THE MAP IS 61,82 (IN TILES)
-		playerX = gp.tileSize * 61;
-		playerY = gp.tileSize * 82;
+		playerX = gp.tileSize * 45;
+		playerY = gp.tileSize * 47;
 		
 		//PLAYER'S SPEED IS 4PX PER MOVEMENT, AND IS FACING DOWN BY DEFAULT
 		speed = 4;
@@ -54,20 +54,15 @@ public class Player extends Entity{
 	
 	//LOAD THE IMAGES OF PLAYER, UP, DOWN, ETC...
 	public void getPlayerImage() {
-		
-		try {
-			up1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_up_1.png"));
-			up2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_up_2.png"));
-			down1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_down_1.png"));
-			down2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_down_2.png"));
-			left1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_left_1.png"));
-			left2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_left_2.png"));
-			right1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_right_1.png"));
-			right2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_right_2.png"));
-			
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
+	
+		up1 = setup("/player/boy_up_1");
+		up2 = setup("/player/boy_up_2");
+		down1 = setup("/player/boy_down_1");
+		down2 = setup("/player/boy_down_2");
+		left1 = setup("/player/boy_left_1");
+		left2 = setup("/player/boy_left_2");
+		right1 = setup("/player/boy_right_1");
+		right2 = setup("/player/boy_right_2");
 	}
 	
 	//UPDATE THE PLAYER'S DIRECTION AND MOVEMENT
@@ -101,6 +96,8 @@ public class Player extends Entity{
     		int objIndex = gp.collisionManager.checkObject(this, true);
     		resolveObjectCollision(objIndex);
     	
+    		int npcIndex = gp.collisionManager.checkEntity(this, gp.npc);
+    		resolveNPCCollision(npcIndex);
     		// ONLY IF NO COLLISION IS DETECTED WILL THE PLAYER ACTUALLY MOVE
     		if (collisionOn == false) {
     			switch(direction) {
@@ -123,6 +120,13 @@ public class Player extends Entity{
     			spriteCounter = 0;
     		}
     	}
+    	else {
+    		standCounter++;
+    		if (standCounter > 20) {
+    			spriteNum = 1;
+    			standCounter = 0;
+    		}
+    	}
 	}
 	
 	// ESTABLISHED WHAT INTERACTION HAPPENS WITH AN OBJECT IF IT COLLIDES WITH PLAYER
@@ -130,33 +134,12 @@ public class Player extends Entity{
 		
 		// IF THE PLAYER COLLIDED WITH AN OBJECT
 		if (i != -1) {
-			String objName = gp.obj[i].name;
-			switch(objName) {
-			case "card":
-				gp.obj[i] = null;
-				cards++;
-				gp.playSoundEffect(1);
-				gp.screenUI.showMessage("Found a card with money");
-				break;
-			case "door":
-				if (cards > 0) {
-					gp.obj[i] = null;
-					cards--;
-					gp.playSoundEffect(2);
-				} else {
-					gp.screenUI.showMessage("You need a card");
-				}
-				break;
-			case "ATM":
-				gp.screenUI.gameFinish = true;
-				gp.music.stop();	
-				break;
-			case "pop":
-				speed += 3;
-				gp.obj[i] = null;
-				gp.playSoundEffect(3);
-				break;
-			}
+			
+		}
+	}
+	public void resolveNPCCollision(int i) {
+		if (i != -1) {
+			System.out.println("helo");
 		}
 	}
 	
@@ -167,44 +150,57 @@ public class Player extends Entity{
 		
 		//SWITCH THE SPRITES
 		switch(direction) {
+		
 			case "up":
+			
 				if (spriteNum  == 1) {
 					image = up1;
 				}
+				
 				else if (spriteNum == 2) {
 					image = up2;
 				}
+				
 			break;
 			
 			case "down":
+				
 				if (spriteNum  == 1) {
 					image = down1;
 				}
+				
 				else if (spriteNum == 2) {
 					image = down2;
 				}
+				
 			break;
 			
 			case "left":
+				
 				if (spriteNum  == 1) {
 					image = left1;
 				}
+				
 				else if (spriteNum == 2) {
 					image = left2;
 				}
+				
 			break;
 			
 			case "right":
+				
 				if (spriteNum  == 1) {
 					image = right1;
 				}
+				
 				else if (spriteNum == 2) {
 					image = right2;
 				}
+				
 				break;
 		}
 		
 		// WHEN THE SPRITE IS LOADED AND EVERYTHING IS UPDATED, ACTUALLY DRAW THE PLAYER IN THE MIDDLE OF THE SCREEN
-		graph2D.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+		graph2D.drawImage(image, screenX, screenY, null);
 	}
 }

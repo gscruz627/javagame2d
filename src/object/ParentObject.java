@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import main.ExtraTools;
 import main.GamePanel;
 
 public class ParentObject {
@@ -18,6 +19,8 @@ public class ParentObject {
 	public Rectangle hitbox = new Rectangle(0,0,48,48);
 	public int hitboxDefaultX = 0;
 	public int hitboxDefaultY = 0;
+	
+	ExtraTools tools = new ExtraTools();
 	
 	public void draw(Graphics graph2D, GamePanel gp) {
 		

@@ -27,6 +27,13 @@ public class KeyHandler implements KeyListener{
 		else if (code == KeyEvent.VK_RIGHT) {
 			pressedRight = true;
 		}
+		else if (code == KeyEvent.VK_P) {
+			if (gp.gameState == gp.playState) {
+				gp.gameState = gp.pauseState;
+			} else if (gp.gameState == gp.pauseState) {
+				gp.gameState = gp.playState;
+			}
+		}
 		
 		/*else if (code == KeyEvent.VK_Z) {
 			gp.zoomIn();

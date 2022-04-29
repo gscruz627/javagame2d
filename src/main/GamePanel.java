@@ -36,24 +36,30 @@ public class GamePanel extends JPanel implements Runnable{
     TileManager tileManager = new TileManager(this); //MANAGES TILES
     public CollisionManager collisionManager = new CollisionManager(this); //MANAGES COLLISION (ENTITY-OBJECT)
     public ObjectManager objManager = new ObjectManager(this); //MANAGES OBJECTS
-    public SoundManager music = new SoundManager();
-    SoundManager soundEffect = new SoundManager();
+    public SoundManager music = new SoundManager(); //MANAGES BACKGROUND MUSIC
+    public SoundManager soundEffect = new SoundManager(); //MANAGES SOUND EFFECTS
+    public UI screenUI = new UI(this); //MANAGES IN-SCREEN BUTTONS, TEXT, ETC
     
     
     //CREATORS
     public Thread gameThread; //CREATES GAME THREAD
     public Player player = new Player(this, this.keyHandler); //CREATES A PLAYER
     public ParentObject[] obj = new ParentObject[10]; //CREATES A (10) LIST OF OBJECTS ON THE SCREEN
-    public UI screenUI = new UI(this);
+    public Entity npc[] = new Entity[10];
     
-    //CLASS HELPERS
-    private int keyZCounter = 0;
+    //CLASS HELPERS AND IMPORTANT
+    //private int keyZCounter = 0;
+    public int gameState;
+    public final int playState = 1;
+    public final int pauseState = 2;
 
     // SETS UP ADDITIONAL DETAILS
     public void setupAdditional() {
     	
     	objManager.setObject(); //THE OBJECT MANAGER BEGINS CHECKING FOR COLLISION
-    	playMusic(0); // BACKGROUND MUSIC WILL BE PLAYED
+    	objManager.setNPC();
+    	//playMusic(0); // BACKGROUND MUSIC WILL BE PLAYED
+    	gameState = playState;
     }
     
     //STARTS THE GAME
@@ -90,7 +96,8 @@ public class GamePanel extends JPanel implements Runnable{
     	}
     	
     }
-    	
+    
+    //PLAYS THE BACKGROUND MUSIC
     public void playMusic(int i) {
     	music.setFile(i);
     	music.play();
@@ -107,12 +114,23 @@ public class GamePanel extends JPanel implements Runnable{
     }
     // UPDATES INFORMATION ON THE SCREEN
     public void update() {
-    	player.update();
+    	if (gameState == playState) {
+    		player.update();
+    		for (int i = 0; i < npc.length; i++) {
+    			if (npc[i] != null) {
+    				npc[i].update();
+    			}
+    		}
+    	} else if (gameState == pauseState) {
+    		
+    	}
     }
     
     // OVERRIDES PANEL METHOD TO DRAW OBJECTS ON SCREEN
     public void paintComponent(Graphics graph) {
     	
+    	long startTime = 0;
+    	startTime =  System.nanoTime();
     	super.paintComponent(graph); //RECURSION TO ITS PARENT
     	
     	Graphics2D graph2D = (Graphics2D)graph;
@@ -125,12 +143,22 @@ public class GamePanel extends JPanel implements Runnable{
     			obj[i].draw(graph2D, this);
     		}
     	}
-    	
+    	for (int i = 0; i < npc.length; i++) {
+    		if (npc[i] != null) {
+    			npc[i].draw(graph2D);
+    		}
+    	}
     	player.draw(graph2D); //PLAYER THIRD
-    	screenUI.draw(graph2D);	
-    	 // ON SCREEN UI FOURTH
     	
-    	graph2D.dispose();
+    	screenUI.draw(graph2D); //SCREEN INTERFACE FOURTH
+    	
+    	long drawEnd = System.nanoTime();
+    	long passed = drawEnd - startTime;
+    	graph2D.setColor(Color.RED);
+    	graph2D.setFont(graph2D.getFont().deriveFont(18f));
+    	String passedFormat = "" + passed;
+    	graph2D.drawString("Draw Time: " + passedFormat.substring(0,1) + " ms", 600, 40);
+    	graph2D.dispose(); //ONCE DRAWN THE RESOURCES ARE CUT TO STOP DRAINING
     } 
     
     /* FUTURE IMPLEMENTATION
